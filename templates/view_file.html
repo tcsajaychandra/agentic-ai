@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{ filename }} - SCTE-224 Viewer{% endblock %}
+
+{% block content %}
+<h1>SCTE-224 Output: {{ filename }}</h1>
+
+<div class="card">
+    <div class="xml-toolbar">
+        <a href="{{ url_for('results') }}" class="btn btn-sm">&larr; Back to Results</a>
+    </div>
+    <pre class="xml-content"><code>{{ content }}</code></pre>
+</div>
+{% endblock %}

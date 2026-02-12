@@ -1,0 +1,5 @@
+event_id,title,channel,start_time,end_time,program_type,blackout_regions,content_id,alternate_content
+CBS-EVT-001,60 Minutes,CBS,2026-02-15T19:00:00Z,2026-02-15T20:00:00Z,News,,cbs-60m-20260215,
+CBS-EVT-002,NFL on CBS,CBS,2026-02-15T13:00:00Z,2026-02-15T16:30:00Z,Sports,MA|CT,cbs-nfl-20260215,Local CBS News
+CBS-EVT-003,NCIS,CBS,2026-02-16T21:00:00Z,2026-02-16T22:00:00Z,Drama,,cbs-ncis-20260216,
+CBS-EVT-004,March Madness Selection,CBS,2026-03-15T18:00:00Z,2026-03-15T20:00:00Z,Sports,TX|FL,cbs-mm-20260315,CBS Sports Desk

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - SCTE-224 Converter{% endblock %}
+
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="grid">
+    <!-- Source Files Panel -->
+    <div class="card">
+        <h2>Source Files</h2>
+        <p class="subtitle">Files in <code>source_files/</code> ready for conversion</p>
+        {% if source_files %}
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Filename</th>
+                    <th>Format</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in source_files %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ f }}</td>
+                    <td><span class="badge badge-{{ f.rsplit('.', 1)[-1] }}">{{ f.rsplit('.', 1)[-1] | upper }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="empty-state">No source files found. Add JSON, CSV, or TXT files to <code>source_files/</code>.</p>
+        {% endif %}
+    </div>
+
+    <!-- Agent Pipeline Panel -->
+    <div class="card">
+        <h2>Agent Pipeline</h2>
+        <p class="subtitle">LangChain Supervisor orchestrates three provider agents</p>
+        <div class="pipeline">
+            <div class="pipeline-node supervisor">Supervisor</div>
+            <div class="pipeline-arrow">&darr;</div>
+            <div class="pipeline-row">
+                <div class="pipeline-node nbcu">NBCU Agent<br><small>JSON</small></div>
+                <div class="pipeline-node cbs">CBS Agent<br><small>CSV</small></div>
+                <div class="pipeline-node fox">FOX Agent<br><small>TXT</small></div>
+            </div>
+            <div class="pipeline-arrow">&darr;</div>
+            <div class="pipeline-node output">SCTE-224 XML Output</div>
+        </div>
+        <form method="POST" action="{{ url_for('run_agents') }}">
+            <button type="submit" class="btn btn-primary">Run Agent Pipeline</button>
+        </form>
+    </div>
+</div>
+
+<!-- Generated Files Panel -->
+{% if target_files %}
+<div class="card" style="margin-top: 1.5rem;">
+    <h2>Generated SCTE-224 Files</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Filename</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in target_files %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ f }}</td>
+                <td><a href="{{ url_for('view_file', filename=f) }}" class="btn btn-sm">View XML</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

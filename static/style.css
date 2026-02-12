@@ -1,0 +1,150 @@
+/* === Reset & Base === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    line-height: 1.6;
+}
+
+/* === Navbar === */
+.navbar {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: #fff;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.nav-brand { font-size: 1.25rem; font-weight: 700; }
+.nav-links a {
+    color: #a0c4ff;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-weight: 500;
+}
+.nav-links a:hover { color: #fff; }
+
+/* === Container === */
+.container { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
+
+/* === Grid === */
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.three-col { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 900px) { .grid, .three-col { grid-template-columns: 1fr; } }
+
+/* === Cards === */
+.card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.card h2 { margin-bottom: 0.5rem; color: #16213e; }
+.card h3 { margin-bottom: 0.75rem; }
+.subtitle { color: #666; font-size: 0.9rem; margin-bottom: 1rem; }
+
+/* === Tables === */
+table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; }
+th, td { padding: 0.6rem 0.75rem; text-align: left; border-bottom: 1px solid #eee; }
+th { background: #f8f9fa; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; color: #555; }
+.table-sm th, .table-sm td { padding: 0.4rem 0.5rem; font-size: 0.85rem; }
+
+/* === Badges === */
+.badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.badge-json { background: #d4edda; color: #155724; }
+.badge-csv  { background: #cce5ff; color: #004085; }
+.badge-txt  { background: #fff3cd; color: #856404; }
+.badge-agent { background: #16213e; color: #fff; font-size: 0.9rem; padding: 0.3rem 0.8rem; }
+
+/* === Buttons === */
+.btn {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.btn-primary { background: #0f3460; color: #fff; }
+.btn-primary:hover { background: #16213e; }
+.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; background: #e9ecef; color: #333; }
+.btn-sm:hover { background: #dee2e6; }
+
+/* === Pipeline Visualization === */
+.pipeline { text-align: center; margin: 1.5rem 0; }
+.pipeline-node {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    margin: 0.25rem;
+}
+.pipeline-node.supervisor { background: #1a1a2e; color: #fff; }
+.pipeline-node.nbcu { background: #d4edda; color: #155724; }
+.pipeline-node.cbs  { background: #cce5ff; color: #004085; }
+.pipeline-node.fox  { background: #fff3cd; color: #856404; }
+.pipeline-node.output { background: #f8d7da; color: #721c24; }
+.pipeline-arrow { font-size: 1.5rem; color: #888; margin: 0.25rem 0; }
+.pipeline-row { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+
+/* === Stats Row === */
+.stats-row { display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 1rem; }
+.stat { text-align: center; flex: 1; min-width: 120px; }
+.stat-value { display: block; font-size: 2rem; font-weight: 700; color: #0f3460; }
+.stat-label { font-size: 0.85rem; color: #666; }
+.text-success { color: #155724; }
+.text-warning { color: #856404; }
+
+/* === Alerts === */
+.alert {
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+.alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.alert-danger  { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+/* === Code / XML viewer === */
+.xml-toolbar { margin-bottom: 1rem; }
+.xml-content {
+    background: #1a1a2e;
+    color: #a0c4ff;
+    padding: 1.25rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+code { font-family: "Fira Code", "Consolas", monospace; }
+
+/* === Result lists === */
+.result-list { list-style: none; margin-top: 0.5rem; }
+.result-list li { padding: 0.25rem 0; }
+.error-list { color: #721c24; margin-top: 0.5rem; }
+.error-list li { padding: 0.2rem 0; }
+.empty-state { color: #888; font-style: italic; padding: 1rem 0; }
+
+/* === Footer === */
+.footer {
+    text-align: center;
+    padding: 1.5rem;
+    color: #888;
+    font-size: 0.85rem;
+    margin-top: 3rem;
+}

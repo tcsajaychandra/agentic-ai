@@ -1,0 +1,38 @@
+{
+  "provider": "NBCU",
+  "events": [
+    {
+      "event_id": "NBCU-EVT-001",
+      "title": "Sunday Night Football",
+      "channel": "NBC",
+      "start_time": "2026-02-15T20:00:00Z",
+      "end_time": "2026-02-15T23:30:00Z",
+      "program_type": "Sports",
+      "blackout_regions": ["NY", "NJ"],
+      "content_id": "nbcu-snf-20260215",
+      "alternate_content": "Local News Broadcast"
+    },
+    {
+      "event_id": "NBCU-EVT-002",
+      "title": "The Tonight Show",
+      "channel": "NBC",
+      "start_time": "2026-02-16T00:00:00Z",
+      "end_time": "2026-02-16T01:00:00Z",
+      "program_type": "Entertainment",
+      "blackout_regions": [],
+      "content_id": "nbcu-tts-20260216",
+      "alternate_content": null
+    },
+    {
+      "event_id": "NBCU-EVT-003",
+      "title": "Olympic Winter Games",
+      "channel": "USA Network",
+      "start_time": "2026-02-20T14:00:00Z",
+      "end_time": "2026-02-20T18:00:00Z",
+      "program_type": "Sports",
+      "blackout_regions": ["CA"],
+      "content_id": "nbcu-owg-20260220",
+      "alternate_content": "Olympic Highlights Replay"
+    }
+  ]
+}

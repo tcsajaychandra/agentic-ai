@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Results - SCTE-224 Converter{% endblock %}
+
+{% block content %}
+<h1>Conversion Results</h1>
+
+{% if not results %}
+<div class="card">
+    <p class="empty-state">No results yet. Go to the <a href="{{ url_for('index') }}">Dashboard</a> and run the agent pipeline.</p>
+</div>
+{% else %}
+
+<!-- Summary Card -->
+<div class="card">
+    <h2>Summary</h2>
+    <div class="stats-row">
+        <div class="stat">
+            <span class="stat-value">{{ results.get('total_files_processed', 0) }}</span>
+            <span class="stat-label">Files Processed</span>
+        </div>
+        <div class="stat">
+            <span class="stat-value">{{ results.get('total_events', 0) }}</span>
+            <span class="stat-label">Events Converted</span>
+        </div>
+        <div class="stat">
+            <span class="stat-value">{{ results.get('total_output_files', 0) }}</span>
+            <span class="stat-label">SCTE-224 Files Generated</span>
+        </div>
+        <div class="stat">
+            <span class="stat-value {{ 'text-success' if results.get('status') == 'success' else 'text-warning' }}">
+                {{ results.get('status', 'N/A') | upper }}
+            </span>
+            <span class="stat-label">Status</span>
+        </div>
+    </div>
+</div>
+
+<!-- Per-Agent Results -->
+{% if results.get('agent_results') %}
+<h2>Agent Details</h2>
+<div class="grid three-col">
+    {% for agent_result in results.get('agent_results', []) %}
+    <div class="card">
+        <h3>
+            <span class="badge badge-agent">{{ agent_result.get('agent', 'Unknown') }}</span>
+        </h3>
+        <ul class="result-list">
+            <li><strong>Status:</strong> {{ agent_result.get('status', 'N/A') }}</li>
+            <li><strong>Files Processed:</strong> {{ agent_result.get('files_processed', 0) }}</li>
+            <li><strong>Events:</strong> {{ agent_result.get('events_count', 0) }}</li>
+        </ul>
+        {% if agent_result.get('events') %}
+        <h4>Events</h4>
+        <table class="table-sm">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Channel</th>
+                    <th>Type</th>
+                    <th>Blackout</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for evt in agent_result.get('events', []) %}
+                <tr>
+                    <td><code>{{ evt.event_id }}</code></td>
+                    <td>{{ evt.title }}</td>
+                    <td>{{ evt.channel }}</td>
+                    <td>{{ evt.program_type }}</td>
+                    <td>{{ evt.blackout_regions | join(', ') if evt.blackout_regions else '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+        {% if agent_result.get('errors') %}
+        <h4>Errors</h4>
+        <ul class="error-list">
+            {% for err in agent_result.get('errors', []) %}
+            <li>{{ err.file }}: {{ err.error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Output Files -->
+{% if target_files %}
+<div class="card" style="margin-top: 1.5rem;">
+    <h2>Generated SCTE-224 Files</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Filename</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in target_files %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ f }}</td>
+                <td><a href="{{ url_for('view_file', filename=f) }}" class="btn btn-sm">View XML</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% endif %}
+{% endblock %}

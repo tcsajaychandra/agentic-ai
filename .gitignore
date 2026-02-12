@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+target_files/*.xml
+.env
+*.egg-info/
