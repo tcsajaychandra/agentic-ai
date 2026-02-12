@@ -140,6 +140,34 @@ code { font-family: "Fira Code", "Consolas", monospace; }
 .error-list li { padding: 0.2rem 0; }
 .empty-state { color: #888; font-style: italic; padding: 1rem 0; }
 
+/* === LLM Analysis Sections === */
+.llm-card { border-left: 4px solid #6c5ce7; }
+.llm-section { margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed #ddd; }
+.llm-output {
+    background: #f8f7ff;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: #2d2d44;
+    white-space: pre-wrap;
+}
+.badge-llm {
+    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    vertical-align: middle;
+}
+.badge-llm-lite {
+    background: linear-gradient(135deg, #00b894, #55efc4);
+    color: #fff;
+    font-size: 0.65rem;
+    padding: 0.15rem 0.45rem;
+    vertical-align: middle;
+}
+
 /* === Footer === */
 .footer {
     text-align: center;

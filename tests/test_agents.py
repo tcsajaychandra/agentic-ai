@@ -1,8 +1,14 @@
-"""Tests for the agent system – individual agents and supervisor."""
+"""Tests for the agent system – individual agents and supervisor.
+
+LLM calls are tested in two modes:
+  1. Without credentials (dummy .env) → llm_analysis is empty string
+  2. With mocked LLM → llm_analysis contains mocked response
+"""
 
 import os
 import json
 import tempfile
+from unittest.mock import patch, MagicMock
 import pytest
 
 from agents.nbcu_agent import NBCUAgent
@@ -56,6 +62,10 @@ def setup_dirs():
         yield src, tgt
 
 
+# ---------------------------------------------------------------------------
+# Tests WITHOUT LLM (dummy credentials → graceful degradation)
+# ---------------------------------------------------------------------------
+
 class TestNBCUAgent:
     def test_finds_json_files(self, setup_dirs):
         src, tgt = setup_dirs
@@ -72,6 +82,14 @@ class TestNBCUAgent:
         assert result["files_processed"] == 1
         assert result["events_count"] == 1
         assert len(result["output_files"]) == 1
+        assert "llm_analysis" in result
+
+    def test_llm_analysis_empty_without_credentials(self, setup_dirs):
+        src, tgt = setup_dirs
+        agent = NBCUAgent(src, tgt)
+        result = agent.process()
+        # With dummy EXAMPLE credentials, LLM is None → empty analysis
+        assert result["llm_analysis"] == ""
 
 
 class TestCBSAgent:
@@ -89,6 +107,7 @@ class TestCBSAgent:
         assert result["agent"] == "CBS"
         assert result["files_processed"] == 1
         assert result["events_count"] == 1
+        assert "llm_analysis" in result
 
 
 class TestFoxAgent:
@@ -106,6 +125,7 @@ class TestFoxAgent:
         assert result["agent"] == "FOX"
         assert result["files_processed"] == 1
         assert result["events_count"] == 1
+        assert "llm_analysis" in result
 
 
 class TestSupervisorAgent:
@@ -138,3 +158,80 @@ class TestSupervisorAgent:
             results = supervisor.run()
             assert results["total_files_processed"] == 0
             assert results["total_events"] == 0
+
+    def test_supervisor_plan_present(self, setup_dirs):
+        src, tgt = setup_dirs
+        supervisor = SupervisorAgent(src, tgt)
+        results = supervisor.run()
+        assert "supervisor_plan" in results
+
+    def test_supervisor_summary_present(self, setup_dirs):
+        src, tgt = setup_dirs
+        supervisor = SupervisorAgent(src, tgt)
+        results = supervisor.run()
+        assert "supervisor_summary" in results
+
+
+# ---------------------------------------------------------------------------
+# Tests WITH mocked LLM (simulates real Bedrock responses)
+# ---------------------------------------------------------------------------
+
+def _make_mock_llm(content="Mocked LLM analysis response."):
+    mock_llm = MagicMock()
+    mock_response = MagicMock()
+    mock_response.content = content
+    mock_llm.invoke.return_value = mock_response
+    return mock_llm
+
+
+class TestAgentsWithMockedLLM:
+    @patch("agents.base_agent.get_agent_llm")
+    def test_nbcu_agent_with_llm(self, mock_get_llm, setup_dirs):
+        mock_get_llm.return_value = _make_mock_llm("NBCU: 1 Sports event with NY blackout.")
+        src, tgt = setup_dirs
+        agent = NBCUAgent(src, tgt)
+        result = agent.process()
+        assert "NBCU: 1 Sports event" in result["llm_analysis"]
+
+    @patch("agents.base_agent.get_agent_llm")
+    def test_cbs_agent_with_llm(self, mock_get_llm, setup_dirs):
+        mock_get_llm.return_value = _make_mock_llm("CBS: 1 News event, no blackouts.")
+        src, tgt = setup_dirs
+        agent = CBSAgent(src, tgt)
+        result = agent.process()
+        assert "CBS: 1 News event" in result["llm_analysis"]
+
+    @patch("agents.base_agent.get_agent_llm")
+    def test_fox_agent_with_llm(self, mock_get_llm, setup_dirs):
+        mock_get_llm.return_value = _make_mock_llm("FOX: 1 Sports event with FL blackout.")
+        src, tgt = setup_dirs
+        agent = FoxAgent(src, tgt)
+        result = agent.process()
+        assert "FOX: 1 Sports event" in result["llm_analysis"]
+
+
+class TestSupervisorWithMockedLLM:
+    @patch("agents.supervisor.get_supervisor_llm")
+    @patch("agents.base_agent.get_agent_llm")
+    def test_supervisor_with_llm(self, mock_agent_llm, mock_sup_llm, setup_dirs):
+        mock_agent_llm.return_value = _make_mock_llm("Agent analysis.")
+        mock_sup_llm.return_value = _make_mock_llm("Supervisor summary: all good.")
+        src, tgt = setup_dirs
+        supervisor = SupervisorAgent(src, tgt)
+        results = supervisor.run()
+
+        assert results["total_events"] == 3
+        assert "Supervisor summary" in results["supervisor_summary"]
+        assert results["supervisor_plan"] == "Supervisor summary: all good."
+
+    @patch("agents.supervisor.get_supervisor_llm")
+    @patch("agents.base_agent.get_agent_llm")
+    def test_agent_llm_analysis_propagated(self, mock_agent_llm, mock_sup_llm, setup_dirs):
+        mock_agent_llm.return_value = _make_mock_llm("Detailed agent analysis.")
+        mock_sup_llm.return_value = _make_mock_llm("Summary.")
+        src, tgt = setup_dirs
+        supervisor = SupervisorAgent(src, tgt)
+        results = supervisor.run()
+
+        for agent_result in results["agent_results"]:
+            assert agent_result["llm_analysis"] == "Detailed agent analysis."

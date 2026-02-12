@@ -35,9 +35,25 @@
     </div>
 </div>
 
+<!-- Supervisor LLM Plan (Nova Pro) -->
+{% if results.get('supervisor_plan') %}
+<div class="card llm-card" style="margin-top: 1.5rem;">
+    <h2>Supervisor Execution Plan <span class="badge badge-llm">Nova Pro</span></h2>
+    <div class="llm-output">{{ results.get('supervisor_plan') }}</div>
+</div>
+{% endif %}
+
+<!-- Supervisor Executive Summary (Nova Pro) -->
+{% if results.get('supervisor_summary') %}
+<div class="card llm-card" style="margin-top: 1.5rem;">
+    <h2>Executive Summary <span class="badge badge-llm">Nova Pro</span></h2>
+    <div class="llm-output">{{ results.get('supervisor_summary') }}</div>
+</div>
+{% endif %}
+
 <!-- Per-Agent Results -->
 {% if results.get('agent_results') %}
-<h2>Agent Details</h2>
+<h2 style="margin-top: 1.5rem;">Agent Details</h2>
 <div class="grid three-col">
     {% for agent_result in results.get('agent_results', []) %}
     <div class="card">
@@ -49,6 +65,15 @@
             <li><strong>Files Processed:</strong> {{ agent_result.get('files_processed', 0) }}</li>
             <li><strong>Events:</strong> {{ agent_result.get('events_count', 0) }}</li>
         </ul>
+
+        <!-- Agent LLM Analysis (Nova Lite) -->
+        {% if agent_result.get('llm_analysis') %}
+        <div class="llm-section">
+            <h4>AI Analysis <span class="badge badge-llm-lite">Nova Lite</span></h4>
+            <div class="llm-output">{{ agent_result.get('llm_analysis') }}</div>
+        </div>
+        {% endif %}
+
         {% if agent_result.get('events') %}
         <h4>Events</h4>
         <table class="table-sm">
